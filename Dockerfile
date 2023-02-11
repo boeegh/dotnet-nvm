@@ -7,14 +7,16 @@ RUN mkdir $NVM_DIR
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash ;
 
 RUN bash -c 'source $NVM_DIR/nvm.sh && \
+  nvm install 12 && \
   nvm install 14 && \
   nvm install 16 && \
+  nvm install 19 && \
   nvm install $NODE_VERSION && \
   nvm use $NODE_VERSION && \
   nvm alias default $NODE_VERSION'
 
 # shortcut scripts that allows running node commands without
-# nvm intially being loaded, because bash is running non-interactive
+# nvm intially being loaded, because bash is default running non-interactive
 RUN printf "#!/bin/bash \
   \nsource \$NVM_DIR/nvm.sh \
   \nnvm \$@\n" > /usr/bin/nvm && chmod +x /usr/bin/nvm
