@@ -13,10 +13,25 @@ RUN bash -c 'source $NVM_DIR/nvm.sh && \
   nvm use $NODE_VERSION && \
   nvm alias default $NODE_VERSION'
 
+# shortcut scripts that allows running node commands without
+# nvm intially being loaded, because bash is running non-interactive
 RUN printf "#!/bin/bash \
   \nsource \$NVM_DIR/nvm.sh \
-  \n\$@\n" > /entry.sh && chmod +x /entry.sh
+  \nnvm \$@\n" > /usr/bin/nvm && chmod +x /usr/bin/nvm
 
-RUN cat /entry.sh
+RUN printf "#!/bin/bash \
+  \nsource \$NVM_DIR/nvm.sh \
+  \nnode \$@\n" > /usr/bin/node && chmod +x /usr/bin/node
+
+RUN printf "#!/bin/bash \
+  \nsource \$NVM_DIR/nvm.sh \
+  \nnpm \$@\n" > /usr/bin/npm && chmod +x /usr/bin/npm
+
+RUN printf "#!/bin/bash \
+  \nsource \$NVM_DIR/nvm.sh \
+  \nnpx \$@\n" > /usr/bin/npx && chmod +x /usr/bin/npx
+
+RUN printf "#!/bin/bash \
+  \nbash -lc \"\$@\"\n" > /usr/bin/run && chmod +x /usr/bin/run
+
 WORKDIR /app
-ENTRYPOINT ["/entry.sh"]
